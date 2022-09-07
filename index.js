@@ -11,25 +11,13 @@ const image = new Image()
 image.src = "./images/Cozy Game Map.png"
 const playerImg = new Image()
 playerImg.src = "./images/playerDown.png"
+const foreground_img = new Image()
+foreground_img.src = "./images/Foreground.png"
 
 const cBlock = []
 for (let i = 0; i < collisions.length;  i+=70) {
     cBlock.push(collisions.slice(i, i + 70))
 
-}
-
-class Bounds {
-    constructor(x, y) {
-        this.x=x
-        this.y=y
-        this.width = 52.8
-        this.height = 52.8
-    }
-
-    draw() {
-        context.fillStyle = "rgba(255, 0, 0, 0)"
-        context.fillRect(this.x, this.y, this.width, this.height)
-    }
 }
 
 const boundary = []
@@ -42,36 +30,9 @@ cBlock.forEach((row, i) => {
     })
 })
 
-class Sprite {
-    constructor(x, y, img, frame = 1) {
-        this.x = x
-        this.y = y
-        this.img = img
-        this.frame = frame
-        this.img.onload = () => {
-            this.width = this.img.width / this.frame
-            this.height = this.img.height
-        }
-    }
-    draw() {
-        context.drawImage(
-            this.img,
-            0,
-            0,
-            this.img.width / this.frame,
-            this.img.height,
-            this.x,
-            this.y,
-            this.img.width / this.frame,
-            this.img.height
-        )
-    }
-
-
-}
-
 
 const background = new Sprite(0, -175, image)
+const foreground = new Sprite(0, -175, foreground_img)
 const player = new Sprite(canvas.width/2 - 110, canvas.height/2 + 80, playerImg, 4)
 
 const keys = {
@@ -90,7 +51,7 @@ function right(pc, blockk, block_x, block_y) {
     )
 }
 
-const block = [background, ...boundary]
+const block = [background, ...boundary, foreground]
 
 function rectangularCollision({rect1, rect2}) {
     return (
@@ -108,6 +69,7 @@ function animate() {
         b.draw()
     })
     player.draw()
+    foreground.draw()
 
     if (keys.a.pressed) {
         let moving = true
