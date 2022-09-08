@@ -1,18 +1,23 @@
 const canvas = document.querySelector("canvas");
-const context = canvas.getContext("2d")
-
 canvas.width = 1024
 canvas.height=576
 
+const context = canvas.getContext("2d")
 context.fillStyle = "white"
 context.fillRect(0, 0, canvas.width, canvas.height)
 
 const image = new Image()
 image.src = "./images/Cozy Game Map.png"
-const playerImg = new Image()
-playerImg.src = "./images/playerDown.png"
+const playerDown = new Image()
+playerDown.src = "./images/playerDown.png"
 const foreground_img = new Image()
 foreground_img.src = "./images/Foreground.png"
+const playerLeft = new Image()
+playerLeft.src = "./images/playerLeft.png"
+const playerRight = new Image()
+playerRight.src = "./images/playerRight.png"
+const playerUp = new Image()
+playerUp.src = "./images/playerUp.png"
 
 const cBlock = []
 for (let i = 0; i < collisions.length;  i+=70) {
@@ -21,7 +26,6 @@ for (let i = 0; i < collisions.length;  i+=70) {
 }
 
 const boundary = []
-
 cBlock.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if (symbol == 2221) {
@@ -30,11 +34,6 @@ cBlock.forEach((row, i) => {
     })
 })
 
-
-const background = new Sprite(0, -175, image)
-const foreground = new Sprite(0, -175, foreground_img)
-const player = new Sprite(canvas.width/2 - 110, canvas.height/2 + 80, playerImg, 4)
-
 const keys = {
     a:{pressed: false},
     w:{pressed: false},
@@ -42,17 +41,11 @@ const keys = {
     d:{pressed: false},
 }
 
-function right(pc, blockk, block_x, block_y) {
-    return (
-        pc.x + pc.width >= block_x &&
-        pc.x <= block_x + blockk.width &&
-        pc.y <= block_y + blockk.height &&
-        pc.y + pc.height >= block_y
-    )
-}
+const background = new Sprite(0, -175, image)
+const foreground = new Sprite(0, -175, foreground_img)
+const player = new Sprite(canvas.width/2 - 110, canvas.height/2 + 80, playerDown, 4)
 
-const block = [background, ...boundary, foreground]
-
+//Returns whether key pressed will result in running into a collision block
 function rectangularCollision({rect1, rect2}) {
     return (
         rect1.x + rect1.width >= rect2.x &&
@@ -61,6 +54,8 @@ function rectangularCollision({rect1, rect2}) {
         rect1.y + rect1.height >= rect2.y
     )
 }
+
+const block = [background, ...boundary, foreground]
 
 function animate() {
     window.requestAnimationFrame(animate)
@@ -71,11 +66,15 @@ function animate() {
     player.draw()
     foreground.draw()
 
+    let moving = true
+    player.moving = false
     if (keys.a.pressed) {
-        let moving = true
+        player.img = playerLeft
+        player.moving = true
         for (let i = 0; i < boundary.length; i++) {
             const boundaries = boundary[i]
-            if (rectangularCollision({rect1: player, rect2: {...boundaries, x: boundaries.x + 3, y:boundaries.y}})) {
+            if (rectangularCollision({rect1: player,
+                rect2: {...boundaries, x: boundaries.x + 3, y:boundaries.y}})) {
                 console.log("colliding")
                 moving=false
                 break
@@ -86,12 +85,13 @@ function animate() {
                 movable.x += 3
             })
         }
-    }
-    else if (keys.w.pressed) {
-        let moving = true
+    } else if (keys.w.pressed) {
+        player.img = playerUp
+        player.moving = true
         for (let i = 0; i < boundary.length; i++) {
             const boundaries = boundary[i]
-            if (rectangularCollision({rect1: player, rect2: {...boundaries, x: boundaries.x, y:boundaries.y + 3}})) {
+            if (rectangularCollision({rect1: player,
+                rect2: {...boundaries, x: boundaries.x, y:boundaries.y + 3}})) {
                 console.log("colliding")
                 moving=false
                 break
@@ -102,12 +102,13 @@ function animate() {
                 movable.y += 3         
             })
         }
-    }
-    else if (keys.s.pressed) {
-        let moving = true
+    } else if (keys.s.pressed) {
+        player.img = playerDown
+        player.moving = true
         for (let i = 0; i < boundary.length; i++) {
             const boundaries = boundary[i]
-            if (rectangularCollision({rect1: player, rect2: {...boundaries, x: boundaries.x, y:boundaries.y - 3}})) {
+            if (rectangularCollision({rect1: player,
+                rect2: {...boundaries, x: boundaries.x, y:boundaries.y - 3}})) {
                 console.log("colliding")
                 moving=false
                 break
@@ -118,12 +119,13 @@ function animate() {
                 movable.y -= 3
             })
         }
-    }
-    else if (keys.d.pressed) {
-        let moving = true
+    } else if (keys.d.pressed) {
+        player.img = playerRight
+        player.moving = true
         for (let i = 0; i < boundary.length; i++) {
             const boundaries = boundary[i]
-            if (rectangularCollision({rect1: player, rect2: {...boundaries, x: boundaries.x - 3, y:boundaries.y}})) {
+            if (rectangularCollision({rect1: player,
+                rect2: {...boundaries, x: boundaries.x - 3, y:boundaries.y}})) {
                 console.log("colliding")
                 moving=false
                 break
