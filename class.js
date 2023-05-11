@@ -7,7 +7,7 @@ class Bounds {
     }
 
     draw() {
-        context.fillStyle = "rgba(255, 0, 0, 0)"
+        context.fillStyle = "rgba(255, 0, 0, 0.5)"
         context.fillRect(this.x, this.y, this.width, this.height)
     }
 }

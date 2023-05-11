@@ -22,7 +22,11 @@ playerUp.src = "./images/playerUp.png"
 const cBlock = []
 for (let i = 0; i < collisions.length;  i+=70) {
     cBlock.push(collisions.slice(i, i + 70))
+}
 
+const bBlock = []
+for (let i = 0; i < battleZones.length;  i+=70) {
+    bBlock.push(battleZones.slice(i, i + 70))
 }
 
 const boundary = []
@@ -30,6 +34,16 @@ cBlock.forEach((row, i) => {
     row.forEach((symbol, j) => {
         if (symbol == 2221) {
             boundary.push(new Bounds(j * 52.8, i * 52.8 - 175))
+        }
+    })
+})
+
+const battleZonesBoundary = []
+
+bBlock.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        if (symbol == 2221) {
+            battleZonesBoundary.push(new Bounds(j * 52.8, i * 52.8 - 175))
         }
     })
 })
@@ -55,13 +69,16 @@ function rectangularCollision({rect1, rect2}) {
     )
 }
 
-const block = [background, ...boundary, foreground]
+const block = [background, ...boundary, foreground, ...battleZonesBoundary]
 
 function animate() {
     window.requestAnimationFrame(animate)
     background.draw()
     boundary.forEach((b) => {
         b.draw()
+    })
+    battleZonesBoundary.forEach((battleZone) => {
+        battleZone.draw()
     })
     player.draw()
     foreground.draw()
