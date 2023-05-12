@@ -83,6 +83,19 @@ function animate() {
     player.draw()
     foreground.draw()
 
+    if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
+        for (let i = 0; i < battleZonesBoundary.length; i++) {
+            const battleZone = battleZonesBoundary[i]
+            if (rectangularCollision({
+                rect1: player,
+                rect2: battleZone
+            }) && Math.random() < 0.005){
+                console.log('collision')
+                break
+            }
+        }
+    }
+
     let moving = true
     player.moving = false
     if (keys.a.pressed) {
@@ -92,7 +105,6 @@ function animate() {
             const boundaries = boundary[i]
             if (rectangularCollision({rect1: player,
                 rect2: {...boundaries, x: boundaries.x + 3, y:boundaries.y}})) {
-                console.log("colliding")
                 moving=false
                 break
             }
@@ -109,7 +121,6 @@ function animate() {
             const boundaries = boundary[i]
             if (rectangularCollision({rect1: player,
                 rect2: {...boundaries, x: boundaries.x, y:boundaries.y + 3}})) {
-                console.log("colliding")
                 moving=false
                 break
             }
@@ -126,7 +137,6 @@ function animate() {
             const boundaries = boundary[i]
             if (rectangularCollision({rect1: player,
                 rect2: {...boundaries, x: boundaries.x, y:boundaries.y - 3}})) {
-                console.log("colliding")
                 moving=false
                 break
             }
@@ -143,7 +153,6 @@ function animate() {
             const boundaries = boundary[i]
             if (rectangularCollision({rect1: player,
                 rect2: {...boundaries, x: boundaries.x - 3, y:boundaries.y}})) {
-                console.log("colliding")
                 moving=false
                 break
             }
@@ -160,7 +169,6 @@ function animate() {
 animate()
 
 window.addEventListener("keydown", (e) => {
-    console.log(e.key)
     switch (e.key) {
         case "a":
             keys.a.pressed = true
@@ -181,7 +189,6 @@ window.addEventListener("keydown", (e) => {
 })
 
 window.addEventListener("keyup", (e) => {
-    console.log(e.key)
     switch (e.key) {
         case "a":
             keys.a.pressed = false
