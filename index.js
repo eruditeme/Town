@@ -71,8 +71,12 @@ function rectangularCollision({rect1, rect2}) {
 
 const block = [background, ...boundary, foreground, ...battleZonesBoundary]
 
+const battle = {
+    initiated: false
+}
+
 function animate() {
-    window.requestAnimationFrame(animate)
+    const animationId = window.requestAnimationFrame(animate)
     background.draw()
     boundary.forEach((b) => {
         b.draw()
@@ -83,21 +87,37 @@ function animate() {
     player.draw()
     foreground.draw()
 
+    let moving = true
+    player.moving = false
+
+    if (battle.initiated) return
+
+    //battle activates
     if (keys.w.pressed || keys.a.pressed || keys.s.pressed || keys.d.pressed) {
         for (let i = 0; i < battleZonesBoundary.length; i++) {
             const battleZone = battleZonesBoundary[i]
             if (rectangularCollision({
                 rect1: player,
                 rect2: battleZone
-            }) && Math.random() < 0.005){
+            }) && Math.random() < 0.003){
                 console.log('collision')
+                // deactivate animation loop
+                window.cancelAnimationFrame(animationId)
+                battle.initiated = true
+                gsap.to("#overlappingDiv", {
+                    opacity: 1,
+                    repeat: 2,
+                    yoyo:true
+                })
+
+                // new animation activates
+                animateBattle()
+
                 break
             }
         }
     }
 
-    let moving = true
-    player.moving = false
     if (keys.a.pressed) {
         player.img = playerLeft
         player.moving = true
@@ -167,6 +187,10 @@ function animate() {
 }
 
 animate()
+
+function animateBattle() {
+    window.requestAnimationFrame(animateBattle)
+}
 
 window.addEventListener("keydown", (e) => {
     switch (e.key) {
