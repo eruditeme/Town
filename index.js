@@ -107,11 +107,15 @@ function animate() {
                 gsap.to("#overlappingDiv", {
                     opacity: 1,
                     repeat: 2,
-                    yoyo:true
+                    yoyo:true,
+                    onComplete () {
+                        // new animation activates
+                        animateBattle()
+                        gsap.to("#overlappingDiv", {
+                            opacity: 0
+                        })
+                    }
                 })
-
-                // new animation activates
-                animateBattle()
 
                 break
             }
@@ -187,9 +191,12 @@ function animate() {
 }
 
 animate()
-
+const battleBackgroundImg = new Image()
+battleBackgroundImg.src = "./images/battleBackground.png"
+const battleBackground = new Sprite(0, 0, battleBackgroundImg)
 function animateBattle() {
     window.requestAnimationFrame(animateBattle)
+    battleBackground.draw()
 }
 
 window.addEventListener("keydown", (e) => {
