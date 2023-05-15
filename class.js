@@ -53,5 +53,10 @@ class Sprite {
         }
     }
 
+    attack({attack, recipent}) {
+        const tl = gsap.timeline()
+        tl.to(this,{ x: this.x - 20}).to(this, { x: this.x + 40, duration:0.1}).to(this, {x:this.x})
+    }
+
 
 }
