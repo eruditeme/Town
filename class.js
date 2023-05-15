@@ -59,33 +59,72 @@ class Sprite {
         }
     }
 
-    attack({attack, recipient}) {
-        const tl = gsap.timeline()
-        recipient.health -= attack.damage
+    attack({attack, recipient, renderedSprites}) {
         let healthBar = "#embyHealth"
         if (recipient.isEnemy) healthBar = "#enemyHealth"
-        tl.to(this,{ x: this.x - 20}).to(this, {
-            x: this.x + 40, duration:0.1, 
-            onComplete: () => {
-                gsap.to(healthBar, {width: recipient.health + "%"})
-                gsap.to(recipient, {
-                    x: recipient.x + 10,
-                    yoyo: true,
-                    repeat:3,
-                    duration: 0.09
+
+        recipient.health -= attack.damage
+
+        // attack based on selected attack
+        switch (attack.name) {
+            case "Fireball":
+                const fireballImg = new Image()
+                fireballImg.src = "./images/fireball.png"
+                const fireball = new Sprite(this.x, this.y, fireballImg, 4)
+                fireball.moving = true
+                renderedSprites.push(fireball)
+
+                gsap.to(fireball, {
+                    x: recipient.x,
+                    y: recipient.y,
+                    onComplete: () => {
+                        gsap.to(healthBar, {width: recipient.health + "%"})
+                        gsap.to(recipient, {
+                            x: recipient.x + 10,
+                            yoyo: true,
+                            repeat:3,
+                            duration: 0.09
+                        })
+                        gsap.to(recipient, {
+                            opacity: 0,
+                            yoyo: true,
+                            repeat:3,
+                            duration: 0.09
+                        })
+                        if (recipient.health <= 0) {
+                            recipient.opacity = 0
+                        }
+                        renderedSprites.pop()
+                    }
                 })
-                gsap.to(recipient, {
-                    opacity: 0,
-                    yoyo: true,
-                    repeat:3,
-                    duration: 0.09
-                })
-                if (recipient.health == 0) {
-                    recipient.opacity = 0
-                }
-            }}
-        ).to(this, {x:this.x})
+                break
+
+            case "Tackle":
+                const tl = gsap.timeline()
+                recipient.health -= attack.damage
+                tl.to(this,{ x: this.x - 20}).to(this, {
+                    x: this.x + 40, duration:0.1, 
+                    onComplete: () => {
+                        // Draggle gets hit
+                        gsap.to(healthBar, {width: recipient.health + "%"})
+                        gsap.to(recipient, {
+                            x: recipient.x + 10,
+                            yoyo: true,
+                            repeat:3,
+                            duration: 0.09
+                        })
+                        gsap.to(recipient, {
+                            opacity: 0,
+                            yoyo: true,
+                            repeat:3,
+                            duration: 0.09
+                        })
+                        if (recipient.health <= 0) {
+                            recipient.opacity = 0
+                        }
+                    }
+                }).to(this, {x:this.x})
+                break
+        }
     }
-
-
 }

@@ -204,6 +204,8 @@ const embyImg = new Image()
 embyImg.src = "./images/embySprite.png"
 const emby = new Sprite(280, 325, embyImg, 4)
 
+const renderedSprites = [draggle, emby]
+
 function animateBattle() {
     window.requestAnimationFrame(animateBattle)
     battleBackground.draw()
@@ -212,19 +214,21 @@ function animateBattle() {
     draggle.isEnemy = true
     emby.moving = true
     emby.hold = 30
-    draggle.draw()
-    emby.draw()
+
+    renderedSprites.forEach((sprite) => {
+        sprite.draw()
+    })
 }
 
+// event listeners for attacks
 document.querySelectorAll('button').forEach(button => {
-    button.addEventListener('click', () => {
-        emby.attack({ attack: {
-            name: "Tackle",
-            damage: 10,
-            type: "Normal"
-        },
-        recipient: draggle
-    })
+    button.addEventListener('click', (e) => {
+        const selectedAttack = attacks[e.currentTarget.innerHTML]
+        emby.attack({
+            attack: selectedAttack,
+            recipient:draggle,
+            renderedSprites
+        })
     })
 })
 
