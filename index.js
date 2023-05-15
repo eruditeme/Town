@@ -191,12 +191,28 @@ function animate() {
 }
 
 animate()
+
 const battleBackgroundImg = new Image()
 battleBackgroundImg.src = "./images/battleBackground.png"
 const battleBackground = new Sprite(0, 0, battleBackgroundImg)
+
+const draggleImg = new Image()
+draggleImg.src = "./images/draggleSprite.png"
+const draggle = new Sprite(800, 100, draggleImg, 4)
+
+const embyImg = new Image()
+embyImg.src = "./images/embySprite.png"
+const emby = new Sprite(280, 325, embyImg, 4)
+
 function animateBattle() {
     window.requestAnimationFrame(animateBattle)
     battleBackground.draw()
+    draggle.moving = true
+    draggle.hold = 30
+    emby.moving = true
+    emby.hold = 30
+    draggle.draw()
+    emby.draw()
 }
 
 window.addEventListener("keydown", (e) => {

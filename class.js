@@ -18,6 +18,7 @@ class Sprite {
         this.y = y
         this.img = img
         this.frame = frame
+        this.hold = 10
         this.val = 0
         this.elapsed = 0
         this.img.onload = () => {
@@ -42,7 +43,7 @@ class Sprite {
             if (this.frame > 1) {
                 this.elapsed += 1
             }
-            if (this.elapsed % 10 == 0) {
+            if (this.elapsed % this.hold === 0) {
                 if (this.val < this.frame - 1) {
                     this.val++
                 } else {
