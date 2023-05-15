@@ -209,6 +209,7 @@ function animateBattle() {
     battleBackground.draw()
     draggle.moving = true
     draggle.hold = 30
+    draggle.isEnemy = true
     emby.moving = true
     emby.hold = 30
     draggle.draw()
