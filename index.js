@@ -19,16 +19,19 @@ playerRight.src = "./images/playerRight.png"
 const playerUp = new Image()
 playerUp.src = "./images/playerUp.png"
 
+//collision blocks
 const cBlock = []
 for (let i = 0; i < collisions.length;  i+=70) {
     cBlock.push(collisions.slice(i, i + 70))
 }
 
+//battle zone blocks
 const bBlock = []
 for (let i = 0; i < battleZones.length;  i+=70) {
     bBlock.push(battleZones.slice(i, i + 70))
 }
 
+//map boundary
 const boundary = []
 cBlock.forEach((row, i) => {
     row.forEach((symbol, j) => {
@@ -76,6 +79,7 @@ const battle = {
 }
 
 function animate() {
+    document.querySelector("#userInterface").style.display = "none"
     const animationId = window.requestAnimationFrame(animate)
     background.draw()
     boundary.forEach((b) => {
@@ -100,7 +104,6 @@ function animate() {
                 rect1: player,
                 rect2: battleZone
             }) && Math.random() < 0.003){
-                console.log('collision')
                 // deactivate animation loop
                 window.cancelAnimationFrame(animationId)
                 battle.initiated = true
@@ -121,7 +124,7 @@ function animate() {
             }
         }
     }
-
+    
     if (keys.a.pressed) {
         player.img = playerLeft
         player.moving = true
@@ -204,10 +207,13 @@ const embyImg = new Image()
 embyImg.src = "./images/embySprite.png"
 const emby = new Sprite(280, 325, embyImg, 4)
 
-const renderedSprites = [draggle, emby]
+const renderedSprites = [emby, draggle]
+
+let battleAnimationId
 
 function animateBattle() {
-    window.requestAnimationFrame(animateBattle)
+    document.querySelector("#userInterface").style.display = "inline"
+    battleAnimationId = window.requestAnimationFrame(animateBattle)
     battleBackground.draw()
     draggle.moving = true
     draggle.hold = 30
@@ -224,11 +230,27 @@ function animateBattle() {
 document.querySelectorAll('button').forEach(button => {
     button.addEventListener('click', (e) => {
         const selectedAttack = attacks[e.currentTarget.innerHTML]
+        document.querySelector("#attackType").innerHTML = selectedAttack.type
         emby.attack({
             attack: selectedAttack,
             recipient:draggle,
             renderedSprites
         })
+        if (emby.health <= 0 || draggle.health <= 0) {
+            emby.opacity = 0
+            gsap.to("#overlappingDiv", {
+                opacity: 1,
+                onComplete: () => {
+                    cancelAnimationFrame(battleAnimationId)
+                    document.querySelector("#userInterface").style.display = "none"
+                    battle.initiated = false
+                    gsap.to("#overlappingDiv", {
+                        opacity: 0
+                    })
+                    animate()
+                }
+            })
+        }
     })
 })
 

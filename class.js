@@ -72,7 +72,8 @@ class Sprite {
                 fireballImg.src = "./images/fireball.png"
                 const fireball = new Sprite(this.x, this.y, fireballImg, 4)
                 fireball.moving = true
-                renderedSprites.push(fireball)
+                //put fireball at index 1 without removing any elements in renderedSprites
+                renderedSprites.splice(1, 0, fireball)
 
                 gsap.to(fireball, {
                     x: recipient.x,
@@ -89,12 +90,16 @@ class Sprite {
                             opacity: 0,
                             yoyo: true,
                             repeat:3,
-                            duration: 0.09
+                            duration: 0.09,
+                            onComplete: () => {
+                                draggle.attack({
+                                    attack: attacks["Tackle"],
+                                    recipient: emby,
+                                    renderedSprites
+                                })
+                            }
                         })
-                        if (recipient.health <= 0) {
-                            recipient.opacity = 0
-                        }
-                        renderedSprites.pop()
+                        renderedSprites.splice(1, 1)
                     }
                 })
                 break
@@ -105,7 +110,6 @@ class Sprite {
                 tl.to(this,{ x: this.x - 20}).to(this, {
                     x: this.x + 40, duration:0.1, 
                     onComplete: () => {
-                        // Draggle gets hit
                         gsap.to(healthBar, {width: recipient.health + "%"})
                         gsap.to(recipient, {
                             x: recipient.x + 10,
@@ -119,9 +123,6 @@ class Sprite {
                             repeat:3,
                             duration: 0.09
                         })
-                        if (recipient.health <= 0) {
-                            recipient.opacity = 0
-                        }
                     }
                 }).to(this, {x:this.x})
                 break
