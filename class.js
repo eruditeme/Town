@@ -99,6 +99,28 @@ class Sprite {
                                         renderedSprites
                                     });
                                 }
+                                if (emby.health <= 0 || draggle.health <= 0) {
+                                    gsap.to("#overlappingDiv", {
+                                        opacity: 1,
+                                        onComplete: () => {
+                                            cancelAnimationFrame(battleAnimationId)
+                                            document.querySelector("#userInterface").style.display = "none";
+                                            battle.initiated = false;
+                                            //ensure battle is reset
+                                            draggle.opacity = 1;
+                                            emby.opacity = 1;
+                                            emby.health = 100;
+                                            draggle.health = 100;
+                                            gsap.to("#embyHealth", {width: "100%"});
+                                            gsap.to("#enemyHealth", {width: "100%"});
+                        
+                                            gsap.to("#overlappingDiv", {
+                                                opacity: 0
+                                            })
+                                            animate();
+                                        }
+                                    })
+                                }
                             }
                         });
                         renderedSprites.splice(1, 1);
@@ -132,10 +154,33 @@ class Sprite {
                     onComplete: () => {
                         if (recipient.isEnemy) {
                             draggle.attack({
-                                attack: attacks["Tackle"],
+                                attack: attacks["Fireball"],
                                 recipient: emby,
                                 renderedSprites
                             });
+                        }
+                        //reset battle if one of the monster's health falls to 0 or under
+                        if (emby.health <= 0 || draggle.health <= 0) {
+                            gsap.to("#overlappingDiv", {
+                                opacity: 1,
+                                onComplete: () => {
+                                    cancelAnimationFrame(battleAnimationId)
+                                    document.querySelector("#userInterface").style.display = "none";
+                                    battle.initiated = false;
+                                    //ensure battle is reset
+                                    draggle.opacity = 1;
+                                    emby.opacity = 1;
+                                    emby.health = 100;
+                                    draggle.health = 100;
+                                    gsap.to("#embyHealth", {width: "100%"});
+                                    gsap.to("#enemyHealth", {width: "100%"});
+                
+                                    gsap.to("#overlappingDiv", {
+                                        opacity: 0
+                                    })
+                                    animate();
+                                }
+                            })
                         }
                     }
                 })

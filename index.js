@@ -237,21 +237,6 @@ document.querySelectorAll('button').forEach(button => {
             recipient:draggle,
             renderedSprites
         })
-        if (emby.health <= 0 || draggle.health <= 0) {
-            emby.opacity = 0;
-            gsap.to("#overlappingDiv", {
-                opacity: 1,
-                onComplete: () => {
-                    cancelAnimationFrame(battleAnimationId)
-                    document.querySelector("#userInterface").style.display = "none";
-                    battle.initiated = false;
-                    gsap.to("#overlappingDiv", {
-                        opacity: 0
-                    })
-                    animate();
-                }
-            })
-        }
     })
 })
 
